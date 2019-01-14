@@ -18,7 +18,7 @@ neural network (RNN) that is adept at defining computational graphs and taking g
 
 The agent interacts with its environment through a sequence of observations, 
 actions, and rewards. Its goal is to select actions in order to
-maximize cumulative future reward, as is standard in Q-Learning. However, since the environment contains a continuous action space (the amount of rotation applied to achieve a desired arm orientation), it is not possible to straightforwardly apply Q-learning, because in continuous spaces finding the greedy policy requires an optimization of at at every timestep. As such, here we used an actor-critic approach based on the DPG (deterministic policy gradient) algorithm. The maintains a parameterized actor function µ(s|θ
+maximize cumulative future reward, as is standard in Q-Learning. However, since the environment contains a continuous action space (the amount of rotation applied to achieve a desired arm orientation), it is not possible to straightforwardly apply Q-learning, because in continuous spaces finding the greedy policy requires an optimization of at at every timestep. As such, an actor-critic approach based on the DPG (deterministic policy gradient) algorithm is used. This algorithm maintains a parameterized actor function µ(s|θ
 µ) which specifies the current
 policy by deterministically mapping states to a specific action. The critic Q(s, a) is learned using
 the Bellman equation as in Q-learning. The actor is updated by following the applying the chain rule
