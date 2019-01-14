@@ -1,7 +1,7 @@
 [//]: # (Image References)
 
 [image1]: https://user-images.githubusercontent.com/10624937/42135612-cbff24aa-7d12-11e8-9b6c-2b41e64b3bb0.gif "Trained Agent"
-[image2]: https://plus.google.com/photos/photo/100789589559084821790/6646418663032146034?authkey=CIuFw-eSu-OIiAE
+[image2]: https://plus.google.com/photos/photo/100789589559084821790/6646418663032146034?authkey=CIuFw-eSu-OIiAE "DPG Algorithm"
 [image3]: https://lh3.googleusercontent.com/-OU0OBi7f0L4/W4TdiuPe4oI/AAAAAAAAF68/V9DJFw4fufERS5UfARVIFcRJNdkDogZigCL0BGAs/w530-d-h79-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B1.28.17%2BAM.png "Loss Function"
 [image4]: https://lh3.googleusercontent.com/-y8LZqmVuCW8/W4ToZiIV8bI/AAAAAAAAF7s/21hHC4Z9KKQZBwalr52NQyn9LLRCoiZPACL0BGAs/w530-d-h260-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B2.14.30%2BAM.png "Hyperparameters"
 [image5]: https://lh3.googleusercontent.com/-GNL6JuAk98o/W4TsEVegb8I/AAAAAAAAF9A/fk9NXU8iXKwy4Ukxe0VjzxIeNF1qKa6UwCL0BGAs/w530-d-h359-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B2.30.05%2BAM.png "Plot"
@@ -23,7 +23,7 @@ policy by deterministically mapping states to a specific action. The critic Q(s,
 the Bellman equation as in Q-learning. The actor is updated by following the applying the chain rule
 to the expected return from the start distribution J with respect to the actor parameters:
 
-![Action Value Function][image2]
+![DPG Algorithm][image2]
 
 This function produces the maximum sum of rewards *r<sub>t</sub>* discounted by *γ* at each timestep
 *t*, achievable by a behaviour policy *π = P(a|s)*, after making an
