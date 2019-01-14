@@ -2,7 +2,7 @@
 
 [image1]: https://s3.amazonaws.com/video.udacity-data.com/topher/2018/May/5af7955a_tennis/tennis.png "Trained Agent"
 
-# Deep Reinforcement Learning Navigation Example
+# Deep Reinforcement Learning Continuous Control Example
 
 ### Introduction
 
