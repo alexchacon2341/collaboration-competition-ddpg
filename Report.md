@@ -12,7 +12,7 @@
 ### Methodology
 
 The project uses methods involving deep neural networks developed in a [2016 paper](https://arxiv.org/pdf/1509.02971.pdf) to
-creat an artificial agent that learns using a deep deterministic policy gradient (DDPG), which
+create an artificial agent that learns using a deep deterministic policy gradient (DDPG), which
 uses end-to-end reinforcement learning to solve an environment created by Unity's ML-Agents. The architecture used in this case is PyTorch's nn Module, a deep recurrent
 neural network (RNN) that is adept at defining computational graphs and taking gradients and is better for defining complex networks than raw autograd.
 
