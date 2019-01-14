@@ -66,7 +66,7 @@ networks were then updated by having them slowly track the learned networks: θ
 improving the stability of learning. This simple change moves the relatively unstable problem of
 learning the action-value function closer to the case of supervised learning, a problem for which
 robust solutions exist. The resulting learning was slow, since
-the target network delayed the propagation of value estimations, in practice its downside were greatly outweighed by the stability of learning.
+the target network delayed the propagation of value estimations. In practice, however its downsides were greatly outweighed by the stability of learning.
 
 ### Hyperparameters
 
