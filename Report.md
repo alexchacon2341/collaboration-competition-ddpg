@@ -37,19 +37,19 @@ One challenge when using neural networks for reinforcement learning is that most
 the samples are generated from exploring sequentially in an environment this assumption no longer
 holds. Additionally, to make efficient use of hardware optimizations, it is essential to learn in minibatches, rather than online.
 
-As in DQN, we used a replay buffer to address these issues. The replay buffer is a finite sized cache
+As in DQN, a replay buffer is used to address these issues. The replay buffer is a finite sized cache
 R. Transitions were sampled from the environment according to the exploration policy and the tuple
-(st, at, rt, st+1) was stored in the replay buffer. When the replay buffer was full the oldest samples
-were discarded. At each timestep the actor and critic are updated by sampling a minibatch uniformly
+(st, at, rt, st+1) was stored in the replay buffer. When the replay buffer was full, the oldest samples
+were discarded. At each timestep, the actor and critic are updated by sampling a minibatch uniformly
 from the buffer. Because DDPG is an off-policy algorithm, the replay buffer can be large, allowing
 the algorithm to benefit from learning across a set of uncorrelated transitions.
 
-Directly implementing Q learning (equation 4) with neural networks proved to be unstable in many
+Directly implementing Q learning with neural networks can be unstable in many
 environments. Since the network Q(s, a|θ
 Q) being updated is also used in calculating the target
-value (equation 5), the Q update is prone to divergence. Our solution is similar to the target network
-used in (Mnih et al., 2013) but modified for actor-critic and using “soft” target updates, rather than
-directly copying the weights. We create a copy of the actor and critic networks, Q0
+value, the Q update is prone to divergence. This issue was addressed with a to the target network
+ modified for actor-critic and using “soft” target updates, rather than
+directly copying the weights. A copy of the actor and critic networks, Q0
 (s, a|θ
 Q0
 ) and
@@ -58,47 +58,15 @@ Q0
 (s|θ
 µ
 0
-) respectively, that are used for calculating the target values. The weights of these target
-networks are then updated by having them slowly track the learned networks: θ
+) respectively, were created and used for calculating the target values. The weights of these target
+networks were then updated by having them slowly track the learned networks: θ
 0 ← τθ + (1 −
 τ )θ
 0 with τ  1. This means that the target values are constrained to change slowly, greatly
 improving the stability of learning. This simple change moves the relatively unstable problem of
 learning the action-value function closer to the case of supervised learning, a problem for which
-robust solutions exist. We found that having both a target µ
-0
-and Q0 was required to have stable
-targets yi
-in order to consistently train the critic without divergence. This may slow learning, since
-the target network delays the propagation of value estimations. However, in practice we found this
-was greatly outweighed by the stability of learning.
-
-When learning from low dimensional feature vector observations, the different components of the
-observation may have different physical units (for example, positions versus velocities) and the
-ranges may vary across environments. This can make it difficult for the network to learn effectively and may make it difficult to find hyper-parameters which generalise across environments with
-different scales of state values.
-
-One approach to this problem is to manually scale the features so they are in similar ranges across
-environments and units. We address this issue by adapting a recent technique from deep learning
-called batch normalization (Ioffe & Szegedy, 2015). This technique normalizes each dimension
-across the samples in a minibatch to have unit mean and variance. In addition, it maintains a running average of the mean and variance to use for normalization during testing (in our case, during
-exploration or evaluation). In deep networks, it is used to minimize covariance shift during training,
-by ensuring that each layer receives whitened input. In the low-dimensional case, we used batch
-normalization on the state input and all layers of the µ network and all layers of the Q network prior
-to the action input (details of the networks are given in the supplementary material). With batch
-normalization, we were able to learn effectively across many different tasks with differing types of
-units, without needing to manually ensure the units were within a set range.
-
-A major challenge of learning in continuous action spaces is exploration. An advantage of offpolicies algorithms such as DDPG is that we can treat the problem of exploration independently
-from the learning algorithm. We constructed an exploration policy µ
-0 by adding noise sampled from
-a noise process N to our actor policy
-
-![Exploration Policy][image4]
-
-N can be chosen to chosen to suit the environment. As detailed in the supplementary materials we
-used an Ornstein-Uhlenbeck process (Uhlenbeck & Ornstein, 1930) to generate temporally correlated exploration for exploration efficiency in physical control problems with inertia (similar use of
-autocorrelated noise was introduced in (Wawrzynski, 2015)).
+robust solutions exist. The resulting learning was slow, since
+the target network delayed the propagation of value estimations, in practice its downside were greatly outweighed by the stability of learning.
 
 ### Hyperparameters
 
@@ -112,4 +80,4 @@ Using these settings, the environment was solved in 497 episodes with an average
 
 ### Suggestions
 
-While the agent was able to converge on a policy that solved the environment in a relatively short period of time, Additional changes may still yield improvements. To increase the likelihood that the agent continues exploring different actions until the optimal policy has been found, it may be beneficial to implement gamma with a curriculum-type structure, ensuring its decay pauses at certain thresholds until a pre-specified average reward is reached. Increasing the number of hidden layers may also yield better results. Finally, extensions of the DQN algorithm, including Double DQN, Dueling DQN, or Rainbow may converge on a more optimal policy in a shorter period.
+While the agent was able to converge on a policy that solved the environment, the learning process was quite slow, taking nearly five hours to complete. An extension of DDPG may still improve the learning rate. Although the environment was solved for a single agent, modifications that allow the DDPG model to train with multiple agents may speed learning, as the agents would be able to gather experiences concurrently and share results.
