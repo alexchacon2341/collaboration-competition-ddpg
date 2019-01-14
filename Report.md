@@ -36,12 +36,14 @@ state and action spaces online. The resulting algorithm is DDPG:
 One challenge when using neural networks for reinforcement learning is that most optimization algorithms assume that the samples are independently and identically distributed. Obviously, when
 the samples are generated from exploring sequentially in an environment this assumption no longer
 holds. Additionally, to make efficient use of hardware optimizations, it is essential to learn in minibatches, rather than online.
+
 As in DQN, we used a replay buffer to address these issues. The replay buffer is a finite sized cache
 R. Transitions were sampled from the environment according to the exploration policy and the tuple
 (st, at, rt, st+1) was stored in the replay buffer. When the replay buffer was full the oldest samples
 were discarded. At each timestep the actor and critic are updated by sampling a minibatch uniformly
 from the buffer. Because DDPG is an off-policy algorithm, the replay buffer can be large, allowing
 the algorithm to benefit from learning across a set of uncorrelated transitions.
+
 Directly implementing Q learning (equation 4) with neural networks proved to be unstable in many
 environments. Since the network Q(s, a|θ
 Q) being updated is also used in calculating the target
@@ -70,10 +72,12 @@ targets yi
 in order to consistently train the critic without divergence. This may slow learning, since
 the target network delays the propagation of value estimations. However, in practice we found this
 was greatly outweighed by the stability of learning.
+
 When learning from low dimensional feature vector observations, the different components of the
 observation may have different physical units (for example, positions versus velocities) and the
 ranges may vary across environments. This can make it difficult for the network to learn effectively and may make it difficult to find hyper-parameters which generalise across environments with
 different scales of state values.
+
 One approach to this problem is to manually scale the features so they are in similar ranges across
 environments and units. We address this issue by adapting a recent technique from deep learning
 called batch normalization (Ioffe & Szegedy, 2015). This technique normalizes each dimension
@@ -84,6 +88,7 @@ normalization on the state input and all layers of the µ network and all layers
 to the action input (details of the networks are given in the supplementary material). With batch
 normalization, we were able to learn effectively across many different tasks with differing types of
 units, without needing to manually ensure the units were within a set range.
+
 A major challenge of learning in continuous action spaces is exploration. An advantage of offpolicies algorithms such as DDPG is that we can treat the problem of exploration independently
 from the learning algorithm. We constructed an exploration policy µ
 0 by adding noise sampled from
