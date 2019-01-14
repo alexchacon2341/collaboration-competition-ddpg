@@ -1,7 +1,7 @@
 [//]: # (Image References)
 
 [image1]: https://user-images.githubusercontent.com/10624937/42135612-cbff24aa-7d12-11e8-9b6c-2b41e64b3bb0.gif "Trained Agent"
-[image2]: https://lh3.googleusercontent.com/-a0Pu8tBE66A/W4TaVpHShPI/AAAAAAAAF6I/QNUld4w_-7AvXoN7J0TBkDb764qUwKcYACL0BGAs/w530-d-h42-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B1.07.44%2BAM.png "Action Value Function"
+[image2]: https://plus.google.com/photos/photo/100789589559084821790/6646418663032146034?authkey=CIuFw-eSu-OIiAE
 [image3]: https://lh3.googleusercontent.com/-OU0OBi7f0L4/W4TdiuPe4oI/AAAAAAAAF68/V9DJFw4fufERS5UfARVIFcRJNdkDogZigCL0BGAs/w530-d-h79-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B1.28.17%2BAM.png "Loss Function"
 [image4]: https://lh3.googleusercontent.com/-y8LZqmVuCW8/W4ToZiIV8bI/AAAAAAAAF7s/21hHC4Z9KKQZBwalr52NQyn9LLRCoiZPACL0BGAs/w530-d-h260-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B2.14.30%2BAM.png "Hyperparameters"
 [image5]: https://lh3.googleusercontent.com/-GNL6JuAk98o/W4TsEVegb8I/AAAAAAAAF9A/fk9NXU8iXKwy4Ukxe0VjzxIeNF1qKa6UwCL0BGAs/w530-d-h359-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B2.30.05%2BAM.png "Plot"
@@ -10,15 +10,18 @@
 
 ### Methodology
 
-The project uses methods involving deep neural networks developed in a [2015 paper](https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf) to
-creat an artificial agent, termed a deep Q-network (DQN), that
+The project uses methods involving deep neural networks developed in a [2016 paper](https://arxiv.org/pdf/1509.02971.pdf) to
+creat an artificial agent that learns using a deep deterministic policy gradient (DDPG), which
 uses end-to-end reinforcement learning to solve an environment created by Unity's ML-Agents. The architecture used in this case is PyTorch's nn Module, a deep recurrent
 neural network (RNN) that is adept at defining computational graphs and taking gradients and is better for defining complex networks than raw autograd.
 
 The agent interacts with its environment through a sequence of observations, 
 actions, and rewards. Its goal is to select actions in order to
-maximize cumulative future reward. More formally, the RNN is used to
-approximate the optimal action-value function:
+maximize cumulative future reward, as is standard in Q-Learning. However, since the environment contains a continuous action space (the amount of rotation applied to achieve a desired arm orientation), it is not possible to straightforwardly apply Q-learning, because in continuous spaces finding the greedy policy requires an optimization of at at every timestep. As such, here we used an actor-critic approach based on the DPG (deterministic policy gradient) algorithm. The maintains a parameterized actor function µ(s|θ
+µ) which specifies the current
+policy by deterministically mapping states to a specific action. The critic Q(s, a) is learned using
+the Bellman equation as in Q-learning. The actor is updated by following the applying the chain rule
+to the expected return from the start distribution J with respect to the actor parameters:
 
 ![Action Value Function][image2]
 
