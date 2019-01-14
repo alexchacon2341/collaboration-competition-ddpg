@@ -2,7 +2,7 @@
 
 [image1]: https://user-images.githubusercontent.com/10624937/42135612-cbff24aa-7d12-11e8-9b6c-2b41e64b3bb0.gif "Trained Agent"
 [image2]: https://lh3.googleusercontent.com/-QrAga9tv-Cc/XDzSj06OyHI/AAAAAAAAGE0/LEj_Vhkoj6whz364EEdYtWJyziDh41rvACL0BGAs/w530-d-h76-n-rw/Screen%2BShot%2B2019-01-14%2Bat%2B1.17.23%2BPM.png "DPG Algorithm"
-[image3]: https://lh3.googleusercontent.com/-OU0OBi7f0L4/W4TdiuPe4oI/AAAAAAAAF68/V9DJFw4fufERS5UfARVIFcRJNdkDogZigCL0BGAs/w530-d-h79-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B1.28.17%2BAM.png "Loss Function"
+[image3]: https://lh3.googleusercontent.com/-mBZhL8EN4Oc/XDzUSKwlkWI/AAAAAAAAGFY/13WHIZ9AomcdHgD49_ETahtlOvjvGVd_QCL0BGAs/w530-d-h85-n-rw/Screen%2BShot%2B2019-01-14%2Bat%2B1.25.55%2BPM.png "Exploration Policy"
 [image4]: https://lh3.googleusercontent.com/-y8LZqmVuCW8/W4ToZiIV8bI/AAAAAAAAF7s/21hHC4Z9KKQZBwalr52NQyn9LLRCoiZPACL0BGAs/w530-d-h260-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B2.14.30%2BAM.png "Hyperparameters"
 [image5]: https://lh3.googleusercontent.com/-GNL6JuAk98o/W4TsEVegb8I/AAAAAAAAF9A/fk9NXU8iXKwy4Ukxe0VjzxIeNF1qKa6UwCL0BGAs/w530-d-h359-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B2.30.05%2BAM.png "Plot"
 
@@ -25,22 +25,78 @@ to the expected return from the start distribution J with respect to the actor p
 
 ![DPG Algorithm][image2]
 
-This function produces the maximum sum of rewards *r<sub>t</sub>* discounted by *γ* at each timestep
-*t*, achievable by a behaviour policy *π = P(a|s)*, after making an
-observation *(s)* and taking an action *(a)*.
 
-In order to correct for instability and even divergence when a nonlinear function approximator is used to represent the action-value function, a replay buffer is implemented. This buffer has two primary facets:
+As with Q learning, introducing non-linear function approximators means that convergence is no
+longer guaranteed. However, such approximators appear essential in order to learn and generalize
+on large state spaces. NFQCA (Hafner & Riedmiller, 2011), which uses the same update rules as
+DPG but with neural network function approximators, uses batch learning for stability, which is
+intractable for large networks. A minibatch version of NFQCA which does not reset the policy at
+each update, as would be required to scale to large networks, is equivalent to the original DPG,
+which we compare to here. Our contribution here is to provide modifications to DPG, inspired by
+the success of DQN, which allow it to use neural network function approximators to learn in large
+state and action spaces online. We refer to our algorithm as Deep DPG (DDPG, Algorithm 1).
 
-1. An experience replay mechanism that randomizes over the data, removing correlations in the observation space and smoothing over changes in the data distribution.
-
-2. An iterative update that adjusts the action-values towards target values that are only periodically updated, reducing correlations with the target.
-
-To perform experience replay, the agent's experiences *e<sub>t</sub> = (s<sub>t</sub>, a<sub>t</sub>, r<sub>t</sub>, s<sub>t + 1</sub>)* are stored at each time-step *t* in a data set *D = {e<sub>1,...,</sub> e<sub>t</sub>}*. Q-learning updates are applied during training on samples of experience *(s,a,r,s')~U(D)*, drawn uniformly at random from the pool of stored samples. The Q-learning update at iteration *i* uses the following loss function:
+One challenge when using neural networks for reinforcement learning is that most optimization algorithms assume that the samples are independently and identically distributed. Obviously, when
+the samples are generated from exploring sequentially in an environment this assumption no longer
+holds. Additionally, to make efficient use of hardware optimizations, it is essential to learn in minibatches, rather than online.
+As in DQN, we used a replay buffer to address these issues. The replay buffer is a finite sized cache
+R. Transitions were sampled from the environment according to the exploration policy and the tuple
+(st, at, rt, st+1) was stored in the replay buffer. When the replay buffer was full the oldest samples
+were discarded. At each timestep the actor and critic are updated by sampling a minibatch uniformly
+from the buffer. Because DDPG is an off-policy algorithm, the replay buffer can be large, allowing
+the algorithm to benefit from learning across a set of uncorrelated transitions.
+Directly implementing Q learning (equation 4) with neural networks proved to be unstable in many
+environments. Since the network Q(s, a|θ
+Q) being updated is also used in calculating the target
+value (equation 5), the Q update is prone to divergence. Our solution is similar to the target network
+used in (Mnih et al., 2013) but modified for actor-critic and using “soft” target updates, rather than
+directly copying the weights. We create a copy of the actor and critic networks, Q0
+(s, a|θ
+Q0
+) and
+µ
+0
+(s|θ
+µ
+0
+) respectively, that are used for calculating the target values. The weights of these target
+networks are then updated by having them slowly track the learned networks: θ
+0 ← τθ + (1 −
+τ )θ
+0 with τ  1. This means that the target values are constrained to change slowly, greatly
+improving the stability of learning. This simple change moves the relatively unstable problem of
+learning the action-value function closer to the case of supervised learning, a problem for which
+robust solutions exist. We found that having both a target µ
+0
+and Q0 was required to have stable
+targets yi
+in order to consistently train the critic without divergence. This may slow learning, since
+the target network delays the propagation of value estimations. However, in practice we found this
+was greatly outweighed by the stability of learning.
+When learning from low dimensional feature vector observations, the different components of the
+observation may have different physical units (for example, positions versus velocities) and the
+ranges may vary across environments. This can make it difficult for the network to learn effectively and may make it difficult to find hyper-parameters which generalise across environments with
+different scales of state values.
+One approach to this problem is to manually scale the features so they are in similar ranges across
+environments and units. We address this issue by adapting a recent technique from deep learning
+called batch normalization (Ioffe & Szegedy, 2015). This technique normalizes each dimension
+across the samples in a minibatch to have unit mean and variance. In addition, it maintains a running average of the mean and variance to use for normalization during testing (in our case, during
+exploration or evaluation). In deep networks, it is used to minimize covariance shift during training,
+by ensuring that each layer receives whitened input. In the low-dimensional case, we used batch
+normalization on the state input and all layers of the µ network and all layers of the Q network prior
+to the action input (details of the networks are given in the supplementary material). With batch
+normalization, we were able to learn effectively across many different tasks with differing types of
+units, without needing to manually ensure the units were within a set range.
+A major challenge of learning in continuous action spaces is exploration. An advantage of offpolicies algorithms such as DDPG is that we can treat the problem of exploration independently
+from the learning algorithm. We constructed an exploration policy µ
+0 by adding noise sampled from
+a noise process N to our actor policy
 
 ![Loss Function][image3]
 
-In this function, *γ* is the discount factor determining the agent's horizon, *θ<sub>i</sub>* are the parameters of the Q-network at iteration *i* and *θ<sub>i</sub><sup>-</sup>* are the network parameters used to compute the target at iteration *i*. The target network
-parameters *θ<sub>i</sub><sup>-</sup>* are only updated with the Q-network parameters *(θ<sub>i</sub>)* every *C* steps and are held fixed between individual updates.
+N can be chosen to chosen to suit the environment. As detailed in the supplementary materials we
+used an Ornstein-Uhlenbeck process (Uhlenbeck & Ornstein, 1930) to generate temporally correlated exploration for exploration efficiency in physical control problems with inertia (similar use of
+autocorrelated noise was introduced in (Wawrzynski, 2015)).
 
 ### Hyperparameters
 
