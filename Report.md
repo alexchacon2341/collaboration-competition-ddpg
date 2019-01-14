@@ -1,11 +1,9 @@
 [//]: # (Image References)
 
-[image1]: https://user-images.githubusercontent.com/10624937/42135612-cbff24aa-7d12-11e8-9b6c-2b41e64b3bb0.gif "Trained Agent"
-[image2]: https://lh3.googleusercontent.com/-QrAga9tv-Cc/XDzSj06OyHI/AAAAAAAAGE0/LEj_Vhkoj6whz364EEdYtWJyziDh41rvACL0BGAs/w530-d-h76-n-rw/Screen%2BShot%2B2019-01-14%2Bat%2B1.17.23%2BPM.png "DPG Algorithm"
-[image3]: https://lh3.googleusercontent.com/-LKAjjGLELyw/XDzVZ56AIBI/AAAAAAAAGGE/vNo3E7Z1wmI9Q5XwInKWIdE_WeCn4pHrgCL0BGAs/w530-d-h350-n-rw/Screen%2BShot%2B2019-01-14%2Bat%2B1.29.19%2BPM.png "DDPG Algorithm"
-[image4]: https://lh3.googleusercontent.com/-mBZhL8EN4Oc/XDzUSKwlkWI/AAAAAAAAGFY/13WHIZ9AomcdHgD49_ETahtlOvjvGVd_QCL0BGAs/w530-d-h85-n-rw/Screen%2BShot%2B2019-01-14%2Bat%2B1.25.55%2BPM.png "Exploration Policy"
-[image5]: https://lh3.googleusercontent.com/-y8LZqmVuCW8/W4ToZiIV8bI/AAAAAAAAF7s/21hHC4Z9KKQZBwalr52NQyn9LLRCoiZPACL0BGAs/w530-d-h260-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B2.14.30%2BAM.png "Hyperparameters"
-[image6]: https://lh3.googleusercontent.com/-GNL6JuAk98o/W4TsEVegb8I/AAAAAAAAF9A/fk9NXU8iXKwy4Ukxe0VjzxIeNF1qKa6UwCL0BGAs/w530-d-h359-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B2.30.05%2BAM.png "Plot"
+[image1]: https://lh3.googleusercontent.com/-QrAga9tv-Cc/XDzSj06OyHI/AAAAAAAAGE0/LEj_Vhkoj6whz364EEdYtWJyziDh41rvACL0BGAs/w530-d-h76-n-rw/Screen%2BShot%2B2019-01-14%2Bat%2B1.17.23%2BPM.png "DPG Algorithm"
+[image2]: https://lh3.googleusercontent.com/-LKAjjGLELyw/XDzVZ56AIBI/AAAAAAAAGGE/vNo3E7Z1wmI9Q5XwInKWIdE_WeCn4pHrgCL0BGAs/w530-d-h350-n-rw/Screen%2BShot%2B2019-01-14%2Bat%2B1.29.19%2BPM.png "DDPG Algorithm"
+[image3]: https://lh3.googleusercontent.com/-y8LZqmVuCW8/W4ToZiIV8bI/AAAAAAAAF7s/21hHC4Z9KKQZBwalr52NQyn9LLRCoiZPACL0BGAs/w530-d-h260-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B2.14.30%2BAM.png "Hyperparameters"
+[image4]: https://lh3.googleusercontent.com/-GNL6JuAk98o/W4TsEVegb8I/AAAAAAAAF9A/fk9NXU8iXKwy4Ukxe0VjzxIeNF1qKa6UwCL0BGAs/w530-d-h359-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B2.30.05%2BAM.png "Plot"
 
 # Report
 
@@ -24,14 +22,14 @@ policy by deterministically mapping states to a specific action. The critic Q(s,
 the Bellman equation as in Q-learning. The actor is updated by following the applying the chain rule
 to the expected return from the start distribution J with respect to the actor parameters:
 
-![DPG Algorithm][image2]
+![DPG Algorithm][image1]
 
 As with Q learning, introducing non-linear function approximators means that convergence is no
 longer guaranteed. However, such approximators appear essential in order to learn and generalize
 on large state spaces. Here, the effort is made to use DPG with neural network function approximators to learn in large
 state and action spaces online. The resulting algorithm is DDPG:
 
-![DDPG Algorithm][image3]
+![DDPG Algorithm][image2]
 
 One challenge when using neural networks for reinforcement learning is that most optimization algorithms assume that the samples are independently and identically distributed. Obviously, when
 the samples are generated from exploring sequentially in an environment this assumption no longer
@@ -72,11 +70,11 @@ the target network delayed the propagation of value estimations. In practice, ho
 
 To best compare across environments, the hyperparemeters used to generate the experiences in "nav_weights.pth" were similar to those used in the paper on which the algorithm was based. The algorithm from this research was able to a achieve a level of performance comparable to that of a professional human games tester across a set of 49 Atari games using only one set of hyperparameters, and these hyperparameters were imitated to attempt similar results while using an RNN as opposed to a CNN (Convolutional Neural Network). Precise values and descriptions for each hyperparameter follow:
 
-![Hyperparameters][image5]
+![Hyperparameters][image3]
 
 Using these settings, the environment was solved in 497 episodes with an average consecutive reward of +13.01. The following plot shows the agent's progress throughout the training session:
 
-![Plot][image6]
+![Plot][image4]
 
 ### Suggestions
 
