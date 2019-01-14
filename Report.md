@@ -2,9 +2,10 @@
 
 [image1]: https://user-images.githubusercontent.com/10624937/42135612-cbff24aa-7d12-11e8-9b6c-2b41e64b3bb0.gif "Trained Agent"
 [image2]: https://lh3.googleusercontent.com/-QrAga9tv-Cc/XDzSj06OyHI/AAAAAAAAGE0/LEj_Vhkoj6whz364EEdYtWJyziDh41rvACL0BGAs/w530-d-h76-n-rw/Screen%2BShot%2B2019-01-14%2Bat%2B1.17.23%2BPM.png "DPG Algorithm"
-[image3]: https://lh3.googleusercontent.com/-mBZhL8EN4Oc/XDzUSKwlkWI/AAAAAAAAGFY/13WHIZ9AomcdHgD49_ETahtlOvjvGVd_QCL0BGAs/w530-d-h85-n-rw/Screen%2BShot%2B2019-01-14%2Bat%2B1.25.55%2BPM.png "Exploration Policy"
-[image4]: https://lh3.googleusercontent.com/-y8LZqmVuCW8/W4ToZiIV8bI/AAAAAAAAF7s/21hHC4Z9KKQZBwalr52NQyn9LLRCoiZPACL0BGAs/w530-d-h260-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B2.14.30%2BAM.png "Hyperparameters"
-[image5]: https://lh3.googleusercontent.com/-GNL6JuAk98o/W4TsEVegb8I/AAAAAAAAF9A/fk9NXU8iXKwy4Ukxe0VjzxIeNF1qKa6UwCL0BGAs/w530-d-h359-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B2.30.05%2BAM.png "Plot"
+[image3]: https://lh3.googleusercontent.com/-LKAjjGLELyw/XDzVZ56AIBI/AAAAAAAAGGE/vNo3E7Z1wmI9Q5XwInKWIdE_WeCn4pHrgCL0BGAs/w530-d-h350-n-rw/Screen%2BShot%2B2019-01-14%2Bat%2B1.29.19%2BPM.png "DDPG Algorithm"
+[image4]: https://lh3.googleusercontent.com/-mBZhL8EN4Oc/XDzUSKwlkWI/AAAAAAAAGFY/13WHIZ9AomcdHgD49_ETahtlOvjvGVd_QCL0BGAs/w530-d-h85-n-rw/Screen%2BShot%2B2019-01-14%2Bat%2B1.25.55%2BPM.png "Exploration Policy"
+[image5]: https://lh3.googleusercontent.com/-y8LZqmVuCW8/W4ToZiIV8bI/AAAAAAAAF7s/21hHC4Z9KKQZBwalr52NQyn9LLRCoiZPACL0BGAs/w530-d-h260-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B2.14.30%2BAM.png "Hyperparameters"
+[image6]: https://lh3.googleusercontent.com/-GNL6JuAk98o/W4TsEVegb8I/AAAAAAAAF9A/fk9NXU8iXKwy4Ukxe0VjzxIeNF1qKa6UwCL0BGAs/w530-d-h359-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B2.30.05%2BAM.png "Plot"
 
 # Report
 
@@ -25,16 +26,12 @@ to the expected return from the start distribution J with respect to the actor p
 
 ![DPG Algorithm][image2]
 
-
 As with Q learning, introducing non-linear function approximators means that convergence is no
 longer guaranteed. However, such approximators appear essential in order to learn and generalize
-on large state spaces. NFQCA (Hafner & Riedmiller, 2011), which uses the same update rules as
-DPG but with neural network function approximators, uses batch learning for stability, which is
-intractable for large networks. A minibatch version of NFQCA which does not reset the policy at
-each update, as would be required to scale to large networks, is equivalent to the original DPG,
-which we compare to here. Our contribution here is to provide modifications to DPG, inspired by
-the success of DQN, which allow it to use neural network function approximators to learn in large
-state and action spaces online. We refer to our algorithm as Deep DPG (DDPG, Algorithm 1).
+on large state spaces. Here, the effort is made to use DPG with neural network function approximators to learn in large
+state and action spaces online. The resulting algorithm is DDPG:
+
+![DDPG Algorithm][image3]
 
 One challenge when using neural networks for reinforcement learning is that most optimization algorithms assume that the samples are independently and identically distributed. Obviously, when
 the samples are generated from exploring sequentially in an environment this assumption no longer
@@ -92,7 +89,7 @@ from the learning algorithm. We constructed an exploration policy µ
 0 by adding noise sampled from
 a noise process N to our actor policy
 
-![Loss Function][image3]
+![Exploration Policy][image4]
 
 N can be chosen to chosen to suit the environment. As detailed in the supplementary materials we
 used an Ornstein-Uhlenbeck process (Uhlenbeck & Ornstein, 1930) to generate temporally correlated exploration for exploration efficiency in physical control problems with inertia (similar use of
@@ -102,11 +99,11 @@ autocorrelated noise was introduced in (Wawrzynski, 2015)).
 
 To best compare across environments, the hyperparemeters used to generate the experiences in "nav_weights.pth" were similar to those used in the paper on which the algorithm was based. The algorithm from this research was able to a achieve a level of performance comparable to that of a professional human games tester across a set of 49 Atari games using only one set of hyperparameters, and these hyperparameters were imitated to attempt similar results while using an RNN as opposed to a CNN (Convolutional Neural Network). Precise values and descriptions for each hyperparameter follow:
 
-![Hyperparameters][image4]
+![Hyperparameters][image5]
 
 Using these settings, the environment was solved in 497 episodes with an average consecutive reward of +13.01. The following plot shows the agent's progress throughout the training session:
 
-![Plot][image5]
+![Plot][image6]
 
 ### Suggestions
 
