@@ -72,7 +72,7 @@ To best compare across environments, the hyperparemeters used to generate the ex
 
 ![Hyperparameters][image3]
 
-Using these settings, the environment was solved in 930 episodes with an average consecutive reward of +0.30. The following plot shows the agent's progress throughout the training session:
+Using these settings, the environment was solved in 497 episodes with an average consecutive reward of +0.51. The following plot shows the agent's progress throughout the training session:
 
 ![Plot][image4]
 
