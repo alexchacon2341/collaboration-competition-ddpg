@@ -10,13 +10,13 @@
 ### Methodology
 
 The project uses methods involving deep neural networks developed in a [2016 paper](https://arxiv.org/pdf/1509.02971.pdf) to
-create an artificial agent that learns using a deep deterministic policy gradient (DDPG), which
+create two artificial agents that learn using a deep deterministic policy gradient (DDPG), which
 uses end-to-end reinforcement learning to solve an environment created by Unity's ML-Agents. The architecture used in this case is PyTorch's nn Module, a deep recurrent
 neural network (RNN) that is adept at defining computational graphs and taking gradients and is better for defining complex networks than raw autograd.
 
-The agent interacts with its environment through a sequence of observations, 
-actions, and rewards. Its goal is to select actions in order to
-maximize cumulative future reward, as is standard in Q-Learning. However, since the environment contains a continuous action space (the amount of rotation applied to achieve a desired arm orientation), it is not possible to straightforwardly apply Q-learning, because in continuous spaces finding the greedy policy requires an optimization of at at every timestep. As such, an actor-critic approach based on the DPG (deterministic policy gradient) algorithm is used. This algorithm maintains a parameterized actor function µ(s|θ
+The agents interact with their environment through a sequence of observations, 
+actions, and rewards. Their goal is to select actions in order to
+maximize cumulative future reward, as is standard in Q-Learning. However, since the environment contains a continuous action space (the height of the two paddles), it is not possible to straightforwardly apply Q-learning, because in continuous spaces finding the greedy policy requires an optimization of at at every timestep. As such, an actor-critic approach based on the DPG (deterministic policy gradient) algorithm is used. This algorithm maintains a parameterized actor function µ(s|θ
 µ) which specifies the current
 policy by deterministically mapping states to a specific action. The critic Q(s, a) is learned using
 the Bellman equation as in Q-learning. The actor is updated by following the applying the chain rule
@@ -78,4 +78,4 @@ Using these settings, the environment was solved in 497 episodes with an average
 
 ### Suggestions
 
-While the agent was able to converge on a policy that solved the environment, the learning process was quite slow, taking nearly five hours to complete. An extension of DDPG may still improve the learning rate. Although the environment was solved for a single agent, modifications that allow the DDPG model to train with multiple agents may speed learning, as the agents would be able to gather experiences concurrently and share their outcomes.
+While the agents were able to converge on a policy that solved the environment, it would be interesting to see how their performance would compare against DQN models besides the standard one. Extensions of the DQN algorithm such Double DQN, Dueling DQN, or Rainbow may converge on a more optimal policy in a shorter period.
