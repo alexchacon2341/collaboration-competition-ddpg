@@ -2,7 +2,7 @@
 
 [image1]: https://lh3.googleusercontent.com/-QrAga9tv-Cc/XDzSj06OyHI/AAAAAAAAGE0/LEj_Vhkoj6whz364EEdYtWJyziDh41rvACL0BGAs/w530-d-h76-n-rw/Screen%2BShot%2B2019-01-14%2Bat%2B1.17.23%2BPM.png "DPG Algorithm"
 [image2]: https://lh3.googleusercontent.com/-LKAjjGLELyw/XDzVZ56AIBI/AAAAAAAAGGE/vNo3E7Z1wmI9Q5XwInKWIdE_WeCn4pHrgCL0BGAs/w530-d-h350-n-rw/Screen%2BShot%2B2019-01-14%2Bat%2B1.29.19%2BPM.png "DDPG Algorithm"
-[image3]: https://lh3.googleusercontent.com/-y8LZqmVuCW8/W4ToZiIV8bI/AAAAAAAAF7s/21hHC4Z9KKQZBwalr52NQyn9LLRCoiZPACL0BGAs/w530-d-h260-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B2.14.30%2BAM.png "Hyperparameters"
+[image3]: https://lh3.googleusercontent.com/-gve8g2OxCzU/XD63Wlr5erI/AAAAAAAAGH4/rslzobf4QY8yhDT0YgIMmQqCeZdZSv2zwCL0BGAs/w530-d-h295-n-rw/Screen%2BShot%2B2019-01-15%2Bat%2B11.47.02%2BPM.png "Hyperparameters"
 [image4]: https://lh3.googleusercontent.com/-GNL6JuAk98o/W4TsEVegb8I/AAAAAAAAF9A/fk9NXU8iXKwy4Ukxe0VjzxIeNF1qKa6UwCL0BGAs/w530-d-h359-n-rw/Screen%2BShot%2B2018-08-28%2Bat%2B2.30.05%2BAM.png "Plot"
 
 # Report
@@ -68,11 +68,11 @@ the target network delayed the propagation of value estimations. In practice, ho
 
 ### Hyperparameters
 
-To best compare across environments, the hyperparemeters used to generate the experiences in "nav_weights.pth" were similar to those used in the paper on which the algorithm was based. The algorithm from this research was able to a achieve a level of performance comparable to that of a professional human games tester across a set of 49 Atari games using only one set of hyperparameters, and these hyperparameters were imitated to attempt similar results while using an RNN as opposed to a CNN (Convolutional Neural Network). Precise values and descriptions for each hyperparameter follow:
+To best compare across environments, the hyperparemeters used to generate the experiences in "checkpoint_critic.pth" and "checkpoint_actor.pth" were similar to those used in the paper on which the algorithm was based. The algorithm from this research was able to a achieve a level of performance comparable to that of a professional human games tester across many games using only one set of hyperparameters, and these hyperparameters were imitated to attempt similar results while using an RNN. Precise values and descriptions for each hyperparameter follow:
 
 ![Hyperparameters][image3]
 
-Using these settings, the environment was solved in 497 episodes with an average consecutive reward of +13.01. The following plot shows the agent's progress throughout the training session:
+Using these settings, the environment was solved in 930 episodes with an average consecutive reward of +0.30. The following plot shows the agent's progress throughout the training session:
 
 ![Plot][image4]
 
